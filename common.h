@@ -1,4 +1,8 @@
-/* Group Details: Member 1 Name: Sumedh Jamadagni, Member 1 Roll number: 24CSB0A76, Member 2 Name: Tarun Nagarajan, Member 2 Roll number: 24CSB0A79 */
+/*
+Group Details:
+Member 1: Sumedh Jamadagni, 24CSB0A76
+Member 2: Tarun Nagarajan 24CSB0A79
+*/
 #ifndef SIMPLEMAIL_COMMON_H
 #define SIMPLEMAIL_COMMON_H
 

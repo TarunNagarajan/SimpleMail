@@ -1,4 +1,8 @@
-/* Group Details: Member 1 Name: Sumedh Jamadagni, Member 1 Roll number: 24CSB0A76, Member 2 Name: Tarun Nagarajan, Member 2 Roll number: 24CSB0A79 */
+/*
+Group Details:
+Member 1: Sumedh Jamadagni, 24CSB0A76
+Member 2: Tarun Nagarajan 24CSB0A79
+*/
 #define _POSIX_C_SOURCE 200809L
 #include "common.h"
 #include "ipc.h"
@@ -30,13 +34,12 @@ typedef struct {
     char *output; size_t output_length, output_offset;
     char nonce[9], username[SM_USER_MAX + 1];
     SmMessage message;
-    size_t credits, chunk_pending;
+    size_t credits, chunk_pending, pending_credits;
 } Client;
 typedef struct { char from[SM_SENDER_MAX + 1], to[SM_RECIPIENTS_MAX * (SM_USER_MAX + 1)], subject[SM_SUBJECT_MAX + 1], date[32]; size_t bytes; unsigned char *body; } StoredMail;
 
 static volatile sig_atomic_t stopping;
 static Client clients[CLIENT_MAX];
-static uint64_t last_freed_generation;
 static void on_signal(int sig) { (void)sig; stopping = 1; }
 
 static int queue_output(Client *c, const void *data, size_t length) {
@@ -200,18 +203,18 @@ static int finish_message(Client *c, SmSharedQueue *queue) {
     if (sm_ipc_try_push(queue, &c->message, &ticket)) { c->state = ST_WAIT_QUEUE; return 0; }
     sm_log("server", "queued ticket %llu from %s to %zu mailboxes", (unsigned long long)ticket, c->message.sender, c->message.recipient_count);
     if (reply(c, "OK Queued %llu to %zu mailboxes\r\n", (unsigned long long)ticket, c->message.recipient_count)) return -1;
-    memset(&c->message, 0, sizeof(c->message)); c->state = ST_FROM; c->credits = c->chunk_pending = 0; return 0;
+    memset(&c->message, 0, sizeof(c->message)); c->state = ST_FROM; c->credits = c->chunk_pending = c->pending_credits = 0; return 0;
 }
 
 static int command_line(Client *c, SmRegistry *registry, SmSharedQueue *queue, char *line) {
     char a[80], extra;
     if (c->state == ST_MODE) {
-        if (!strcmp(line, "MODE SEND")) { c->state = ST_FROM; sm_log("server", "selected SEND mode"); return reply(c, "OK SEND\r\n"); }
+        if (!strcmp(line, "MODE SEND")) { c->state = ST_FROM; sm_log("server", "selected SEND mode"); return reply(c, "OK\r\n"); }
         if (!strcmp(line, "MODE RECV")) {
             if (sm_random_nonce(c->nonce)) return -1;
-            c->state = ST_AUTH; sm_log("server", "selected RECV mode"); return reply(c, "AUTH REQUIRED %s\r\n", c->nonce);
+            c->state = ST_AUTH; sm_log("server", "selected RECV mode"); return reply(c, "OK\r\nAUTH REQUIRED %s\r\n", c->nonce);
         }
-        c->close_after_output = 1; return reply(c, "ERR Expected MODE SEND or MODE RECV\r\n");
+        c->close_after_output = 1; return reply(c, "ERR Unknown mode\r\n");
     }
     if (c->state == ST_AUTH) {
         char canonical[SM_USER_MAX + 1], payload[SM_PASS_MAX + 9], expected[64]; unsigned long claimed;
@@ -244,41 +247,41 @@ static int command_line(Client *c, SmRegistry *registry, SmSharedQueue *queue, c
     }
     if (c->state == ST_FROM) {
         if (!strcmp(line, "QUIT")) { c->close_after_output = 1; return reply(c, "BYE\r\n"); }
-        if (strncmp(line, "FROM ", 5) || !line[5] || strlen(line + 5) > SM_SENDER_MAX || !printable_text(line + 5)) return reply(c, "ERR Expected FROM <display name>\r\n");
+        if (strncmp(line, "FROM ", 5) || !line[5] || strlen(line + 5) > SM_SENDER_MAX || !printable_text(line + 5)) return reply(c, "ERR Bad sequence\r\n");
         memset(&c->message, 0, sizeof(c->message)); strcpy(c->message.sender, line + 5);
-        c->state = ST_TO; return reply(c, "OK Sender accepted\r\n");
+        c->state = ST_TO; return reply(c, "OK Sender accepted.\r\n");
     }
     if (c->state == ST_TO) {
         if (sscanf(line, "TO %21s %c", a, &extra) == 1 && sm_user_valid(a)) {
             int index = sm_user_find(registry, a);
-            if (index < 0) return reply(c, "ERR Unknown recipient\r\n");
+            if (index < 0) return reply(c, "ERR No such user.\r\n");
             for (size_t i = 0; i < c->message.recipient_count; ++i) if (!strcmp(c->message.recipients[i], registry->users[index].name)) return reply(c, "ERR Duplicate recipient\r\n");
             if (c->message.recipient_count == SM_RECIPIENTS_MAX) return reply(c, "ERR Too many recipients\r\n");
             strcpy(c->message.recipients[c->message.recipient_count++], registry->users[index].name);
-            return reply(c, "OK Recipient accepted\r\n");
+            return reply(c, "OK Recipient accepted.\r\n");
         }
         if ((!strcmp(line, "SUB") || !strncmp(line, "SUB ", 4)) && c->message.recipient_count) {
             const char *subject = line[3] == ' ' ? line + 4 : "";
             if (strlen(subject) > SM_SUBJECT_MAX || !printable_text(subject)) return reply(c, "ERR Invalid subject\r\n");
-            strcpy(c->message.subject, subject); c->state = ST_BODY_KIND; return reply(c, "OK Subject accepted\r\n");
+            strcpy(c->message.subject, subject); c->state = ST_BODY_KIND; return reply(c, "OK Subject accepted.\r\n");
         }
-        return reply(c, "ERR Expected TO or SUB after at least one recipient\r\n");
+        return reply(c, "ERR Bad sequence\r\n");
     }
         if (c->state == ST_BODY_KIND) {
         if (!strcmp(line, "BODY_STREAM")) { c->state = ST_STREAM; c->credits = SM_INITIAL_WINDOW; return reply(c, "OK Window %zu\r\n", c->credits); }
-        if (!strcmp(line, "BODY")) { c->state = ST_LEGACY; return reply(c, "OK Send body; terminate with CRLF.CRLF\r\n"); }
-        return reply(c, "ERR Expected BODY_STREAM or BODY\r\n");
+        if (!strcmp(line, "BODY")) { c->state = ST_LEGACY; return reply(c, "OK Send body, end with CRLF.CRLF.\r\n"); }
+        return reply(c, "ERR Bad sequence\r\n");
     }
     if (c->state == ST_STREAM) {
         if (!strcmp(line, "END_BODY")) return finish_message(c, queue);
-        if (sscanf(line, "CHUNK %79s %c", a, &extra) != 1 || !*a) return reply(c, "ERR Expected CHUNK <byte_count> or END_BODY\r\n");
+        if (sscanf(line, "CHUNK %79s %c", a, &extra) != 1 || !*a) return reply(c, "ERR Bad sequence\r\n");
         char *end; errno = 0; unsigned long long n = strtoull(a, &end, 10);
         if (errno || *end || n > SM_BODY_MAX || n > c->credits || c->message.body_length + n > SM_BODY_MAX) {
-            c->close_after_output = 1; return reply(c, n > c->credits ? "ERR Window overflow\r\n" : "ERR Body too large\r\n");
+            c->close_after_output = 1; return reply(c, n > c->credits ? "ERR Window overflow\r\n" : "ERR Body too large.\r\n");
         }
         c->chunk_pending = (size_t)n; c->state = ST_STREAM + 10; return 0;
     }
-    return reply(c, "ERR Invalid protocol state\r\n");
+    return reply(c, "ERR Bad sequence\r\n");
 }
 
 static int process_input(Client *c, SmRegistry *registry, SmSharedQueue *queue) {
@@ -290,29 +293,33 @@ static int process_input(Client *c, SmRegistry *registry, SmSharedQueue *queue) 
             if (c->input_length < c->chunk_pending) break;
             memcpy(c->message.body + c->message.body_length, c->input, c->chunk_pending);
             c->message.body_length += c->chunk_pending; c->credits -= c->chunk_pending; consume(c, c->chunk_pending);
-            /* Moving received bytes into the bounded body frees this input-window space immediately. */
-            c->credits += c->chunk_pending;
+            /* Return staged bytes later, once spool capacity allows the sender to continue. */
+            c->pending_credits += c->chunk_pending;
             c->state = ST_STREAM;
             if (reply(c, "OK Window %zu\r\n", c->credits)) return -1;
             progress = 1; continue;
         }
         if (c->state == ST_LEGACY) {
-            size_t i;
-            for (i = 0; i + 5 <= c->input_length; ++i) if (!memcmp(c->input + i, "\r\n.\r\n", 5)) break;
-            if (i + 5 > c->input_length) {
-                if (c->message.body_length + c->input_length > SM_BODY_MAX + 3) { c->close_after_output = 1; return reply(c, "ERR Body too large\r\n"); }
+            size_t n = 0;
+            while (n + 1 < c->input_length && memcmp(c->input + n, "\r\n", 2)) ++n;
+            if (n + 1 >= c->input_length) {
+                if (c->message.body_length + c->input_length > SM_BODY_MAX + 1) {
+                    c->close_after_output = 1; return reply(c, "ERR Body too large.\r\n");
+                }
                 break;
             }
-            size_t raw = i + 2;
-            if (c->message.body_length + raw > SM_BODY_MAX) { c->close_after_output = 1; return reply(c, "ERR Body too large\r\n"); }
-            /* SMTP dot unstuffing removes one leading dot on each line. */
-            int line_start = c->message.body_length == 0 || (c->message.body_length && c->message.body[c->message.body_length - 1] == '\n');
-            for (size_t j = 0; j < raw; ++j) {
-                if (line_start && c->input[j] == '.' && j + 1 < raw && c->input[j + 1] == '.') ++j;
-                c->message.body[c->message.body_length++] = (unsigned char)c->input[j];
-                line_start = c->input[j] == '\n';
+            if (n == 1 && c->input[0] == '.') {
+                consume(c, 3); if (finish_message(c, queue)) return -1;
+            } else {
+                size_t skip = n > 1 && c->input[0] == '.' && c->input[1] == '.';
+                size_t bytes = n + 2 - skip;
+                if (c->message.body_length + bytes > SM_BODY_MAX) {
+                    c->close_after_output = 1; return reply(c, "ERR Body too large.\r\n");
+                }
+                memcpy(c->message.body + c->message.body_length, c->input + skip, bytes);
+                c->message.body_length += bytes; consume(c, n + 2);
             }
-            consume(c, i + 5); if (finish_message(c, queue)) return -1; progress = 1; continue;
+            progress = 1; continue;
         }
         char line[512]; int n = take_line(c, line, sizeof(line));
         if (n == 0) break;
@@ -338,7 +345,6 @@ int main(int argc, char **argv) {
     memset(&address, 0, sizeof(address)); address.sin_family = AF_INET; address.sin_addr.s_addr = htonl(INADDR_ANY); address.sin_port = htons((uint16_t)port);
     if (bind(listener, (struct sockaddr *)&address, sizeof(address)) || listen(listener, 64) || set_nonblocking(listener)) { perror("listen"); close(listener); sm_ipc_close(&ipc); return 1; }
     memset(clients, 0, sizeof(clients)); for (int i = 0; i < CLIENT_MAX; ++i) clients[i].fd = -1;
-    pthread_mutex_lock(&ipc.queue->mutex); last_freed_generation = ipc.queue->freed_generation; pthread_mutex_unlock(&ipc.queue->mutex);
     signal(SIGINT, on_signal); signal(SIGTERM, on_signal); signal(SIGPIPE, SIG_IGN);
     sm_log("server", "listening on port %ld with %zu users", port, registry.count);
     while (!stopping) {
@@ -382,21 +388,16 @@ int main(int argc, char **argv) {
             }
             if (c->close_after_output && c->output_offset == c->output_length) drop_client(c);
         }
-        pthread_mutex_lock(&ipc.queue->mutex);
-        uint64_t freed = ipc.queue->freed_generation;
-        pthread_mutex_unlock(&ipc.queue->mutex);
-        if (freed > last_freed_generation) {
-            uint64_t slots = freed - last_freed_generation;
+        /* A full ring holds credits at zero; other sockets stay responsive in poll(). */
+        if (sm_ipc_count(ipc.queue) < SM_QUEUE_CAPACITY) {
             for (int i = 0; i < CLIENT_MAX; ++i) {
                 Client *c = &clients[i];
-                if (c->fd >= 0 && c->state == ST_STREAM) {
-                    size_t available = c->credits < SM_WINDOW_MAX ? SM_WINDOW_MAX - c->credits : 0;
-                    uint64_t released = slots * (uint64_t)SM_INITIAL_WINDOW;
-                    size_t grant = released > available ? available : (size_t)released;
-                    if (grant) { c->credits += grant; reply(c, "WINDOW_UPDATE %zu\r\n", grant); }
+                if (c->fd >= 0 && c->state == ST_STREAM && c->pending_credits) {
+                    size_t grant = c->pending_credits;
+                    c->pending_credits = 0; c->credits += grant;
+                    if (reply(c, "WINDOW_UPDATE %zu\r\n", grant)) c->close_after_output = 1;
                 }
             }
-            last_freed_generation = freed;
         }
         for (int i = 0; i < CLIENT_MAX; ++i) {
             Client *c = &clients[i]; uint64_t ticket;
@@ -404,6 +405,7 @@ int main(int argc, char **argv) {
                 sm_log("server", "queued ticket %llu from %s to %zu mailboxes", (unsigned long long)ticket, c->message.sender, c->message.recipient_count);
                 reply(c, "OK Queued %llu to %zu mailboxes\r\n", (unsigned long long)ticket, c->message.recipient_count);
                 memset(&c->message, 0, sizeof(c->message)); c->state = ST_FROM;
+                c->credits = c->chunk_pending = c->pending_credits = 0;
                 if (process_input(c, &registry, ipc.queue)) c->close_after_output = 1;
             }
         }

@@ -1,47 +1,51 @@
-# SimpleMail Technical Guide
+# SimpleMail, Documentation.
 
-Group members: Sumedh Jamadagni (24CSB0A76) and Tarun Nagarajan (24CSB0A79).
+Group Details:
 
-## Overview
+Member 1: Sumedh Jamadagni, 24CSB0A76
 
-SimpleMail consists of three POSIX C programs. `smclient` is the interactive terminal interface. `smserver` accepts TCP sessions, checks protocol state, authenticates mailbox readers, and places complete outgoing messages into a process-shared queue. `smspooler` consumes that queue and writes each message into the recipient mailboxes. The spooler creates and writes mail files; the server reads and deletes them for authenticated mailbox sessions.
+Member 2: Tarun Nagarajan 24CSB0A79
 
-The programs target a Linux/POSIX environment with POSIX shared memory, process-shared pthread mutexes and condition variables, IPv4/IPv6 client sockets, and `poll()`. The server listens on one IPv4 TCP port and can serve up to 128 active client sessions.
+## Purpose and architecture
 
-## Build and start
+This document covers the components and behavior required by the Computer Networking Programming Assignment. SimpleMail consists of `smserver`, `smspooler`, and `smclient`. The client and server use TCP; the server and spooler exchange complete messages through a shared-memory ring. Only the spooler creates and writes mail files. The authenticated server reads or deletes files for SMP mailbox operations.
 
-Use the Makefile with a C11 compiler:
+The server uses nonblocking sockets and `poll()` to serve up to 128 clients on one configurable port. Each connection owns an input buffer, output buffer, protocol state, nonce, and bounded message staging record. Partial TCP reads are retained until a complete command or chunk arrives; partial writes remain queued. A waiting sender does not block other clients.
+
+## Build, startup and user registry
+
+Build on Ubuntu/Linux with a C11 compiler, Make, POSIX shared memory, sockets and pthread support:
 
 ```sh
 make clean
 make
 ```
 
-The warning flags are `-Wall -Wextra -Wpedantic`. Start the daemons in this order, from the project directory:
+The Makefile builds all three programs with `-Wall -Wextra -Wpedantic` and links pthread/real-time support. Start the following in separate terminals, from the same project directory:
 
 ```sh
 ./smspooler users.txt
-```
-
-In another terminal:
-
-```sh
 ./smserver 2525 users.txt
-```
-
-Run the client in a third terminal:
-
-```sh
 ./smclient 127.0.0.1 2525
 ```
 
-The spooler creates the named shared-memory object `/simplemail_v1_ring`; the server joins it. A server started without an initialized spooler fails after waiting up to five seconds. A second live spooler is rejected. If a spooler has crashed, its stale shared-memory object is removed when a new spooler starts and finds the old owner process is gone. A normal shutdown unlinks the shared-memory object. Stop the server before stopping the spooler so the server does not retain a mapping to a queue with no consumer. A restart begins a fresh queue ticket sequence; mailbox IDs remain durable.
+Both daemons load the user registry at startup. Use one username/password pair per line, separated by a space. Usernames are ASCII letters, at most 20 characters, and are compared without case; mailbox paths use lowercase names. Passwords are case-sensitive ASCII alphanumeric strings, at most 30 characters. Duplicate usernames and invalid or missing registries cause startup failure. The parser also permits blank lines and comment lines beginning with `#`.
 
-`users.txt` has one `username password` pair per nonblank line. Lines beginning with `#` are ignored. The registry must contain at least one user, at most 128 entries, and no duplicate names ignoring ASCII case. Usernames contain 1-20 ASCII letters. Passwords contain 1-30 ASCII letters or digits. Mailbox directory names use lower-case canonical usernames; passwords preserve case.
+The sample users are `alice password1`, `bob secret2`, and `carol hunter7`. The implementation supports 128 registry entries. Passwords in this registry and the required DJB2 challenge mechanism follow the assignment's format.
 
-## Mailboxes and durable IDs
+Start the spooler before the server; the server waits up to five seconds for its shared object. A second live spooler is rejected. After a crash, a replacement spooler can remove a stale shared object whose owner is no longer alive. Stop the server before the spooler; the server must not continue using a queue without its consumer.
 
-At spooler startup, `mailboxes/` and a directory for every registered user are created if absent. A delivered message is stored as `mailboxes/<canonical-user>/<id>.txt`. Each file contains:
+## Shared-memory spool and synchronization
+
+The POSIX object `/simplemail_v1_ring` contains eight fixed-capacity message slots. Each record holds the sender display name, accepted recipients and count, subject, body length, a 65,536-byte body buffer, and queue ticket. The queue header contains the owner PID, initialization magic, head/tail/count, ticket counter and a dequeue generation counter.
+
+A process-shared pthread mutex protects record publication, indexes and counters. Process-shared `not_empty` and `not_full` conditions coordinate queue availability. These implement the assignment's permitted mutex/condition-variable alternative to unnamed semaphores. The spooler waits for records and releases queue capacity after dequeue. The frontend attempts insertion without waiting in the event loop; a completed message remains in its connection state until a slot is available.
+
+The server assigns increasing queue tickets while the shared queue exists. The spooler validates each queued recipient and writes a copy to every accepted recipient. A fresh spooler run resets the queue ticket sequence; mailbox IDs are separate, durable counters. Queue contents are volatile, so `OK Queued` confirms acceptance into shared memory rather than completed disk persistence.
+
+## Mailbox files and IDs
+
+At startup the spooler creates `mailboxes/` and one directory for every registered user. Each mail is a separate `<id>.txt` file. The stored format is:
 
 ```text
 From: <display name>
@@ -50,90 +54,91 @@ Subject: <subject or (no subject)>
 Date: <YYYY-MM-DD HH:MM:SS>
 ---
 
-<body bytes>
+<body>
 ```
 
-Each mailbox's hidden `.next-id` file holds its next ID. The spooler writes the incremented value to a temporary file, flushes it, calls `fsync()`, renames it into place, then synchronizes the mailbox directory before creating the message file. A crash can therefore skip an ID, but cannot cause an already allocated ID to be reused. Missing metadata is initialized to 1 only for a mailbox directory created by that spooler startup and still empty. If an existing mailbox has missing, malformed, unreadable, or unusable metadata, startup or delivery fails closed; it never reconstructs history from the message files. This is deliberate because deleted messages may have contained a higher ID than any file left behind. Deletion removes the message file but does not change `.next-id`.
+Each mailbox's `.next-id` metadata starts at 1. The spooler reserves the next ID using a temporary metadata file, flushes and synchronizes it, renames it, and synchronizes the directory before creating the mail. A crash may skip an ID, but deletion and normal restart do not reuse it. A newly created empty mailbox can initialize metadata; an existing mailbox with missing or malformed metadata fails closed. The spooler does not reconstruct deletion history from remaining files.
 
-The display name is accepted as text after `FROM`, up to 128 bytes. Recipient names must match the registry and are canonicalized. Subjects are limited to 512 bytes. Empty subjects are stored as `(no subject)`. Bodies are at most 65,536 bytes.
+## Connection handshake and SMTP2
 
-## Shared-memory queue and synchronization
+A new connection receives `WELCOME SimpleMail v1.0`. `MODE SEND` or `MODE RECV` receives `OK`; RECV then receives its authentication challenge. An invalid mode receives `ERR Unknown mode` and closes. A connection that sends no mode is closed after 30 seconds.
 
-The shared object contains a fixed ring of eight complete `SmMessage` records. Each record carries a process-local monotonic ticket, display name, up to sixteen recipient names, subject, body length, and a fixed 65,536-byte body buffer. The shared structure also holds the owner PID, version magic, ring head/tail/count, next ticket, and number of freed slots.
+SMTP2 commands and responses end with CRLF. Command lines are limited to 512 bytes including CRLF. Sending requires no authentication; FROM carries a display name, rather than a registered account. The implementation permits 128-byte display names, up to 16 accepted recipients, and printable header text.
 
-One `PTHREAD_PROCESS_SHARED` mutex guards the queue count, head, tail, ticket counter, generation, and record publication. A process-shared `not_empty` condition wakes the spooler when the server enqueues a record. A process-shared `not_full` condition is signaled as the spooler pops a record. Server-side queue insertion is nonblocking: if the ring is full, the completed message stays in that client's bounded connection state, and the poll loop retries it after capacity becomes available. This keeps unrelated sessions responsive while one sender waits.
-
-The spooler validates each queued recipient against its startup registry, then persists one copy for each accepted recipient. It logs each dequeue and each recipient delivery or failure. Tickets increase within one spooler lifetime and restart from 1 after a fresh shared queue is initialized; durable mailbox IDs do not reset.
-
-## Concurrency and TCP framing
-
-The listener and accepted server sockets are nonblocking. `poll()` watches the listener and all active sessions. Each session retains its own input buffer, output buffer, protocol state, staging record, and challenge nonce. Output is queued and sent as the socket becomes writable. This allows greetings, command lines, raw chunk headers and data, and pipelined commands to arrive split across or combined into arbitrary TCP reads.
-
-Command lines use CRLF and may occupy at most 512 bytes including the terminator. The server keeps incomplete lines buffered until CRLF arrives and rejects overlong lines. A new connection receives `WELCOME SimpleMail v1.0`; it must select `MODE SEND` or `MODE RECV` within 30 seconds. Invalid mode handshakes are answered with an error and closed. Significant server and spooler events are written to stdout with the exact timestamp prefix `[YYYY-MM-DD HH:MM:SS]`.
-
-## SMTP2 sending protocol
-
-The send mode accepts a strict transaction sequence:
-
-```text
-FROM <display name>
-TO <registered user>
-TO <another registered user>
-SUB <subject text>
-BODY_STREAM
-CHUNK <byte_count>
-<exactly byte_count raw bytes>
-END_BODY
-```
-
-At least one valid `TO` is required. Each chunk header is a CRLF line, followed immediately by exactly the announced number of raw bytes. The client may split a chunk across TCP packets; the server waits for all announced bytes before acknowledging it. `END_BODY` enqueues the complete message and returns `OK Queued <ticket> to <recipient_count> mailboxes`. `QUIT` returns `BYE`; after a queued transaction the sender may begin another with `FROM`.
-
-Legacy clients may choose `BODY` instead. The server then reads text through the `CRLF.CRLF` terminator and removes one dot from every dot-stuffed line. In both modes, a body larger than 65,536 bytes is rejected. If there are no recipients accepted or a command arrives out of sequence, the server reports a protocol error.
-
-### Byte-credit accounting
-
-The streaming byte window and the ring's eight message slots are distinct resources. `BODY_STREAM` starts with 2,048 bytes of client input-window credit and replies `OK Window 2048`. A sender must not send a `CHUNK` larger than its current credit; otherwise the server responds `ERR Window overflow` and closes that connection. After a complete chunk is copied into the bounded per-client body record and removed from the network input buffer, those consumed bytes are returned in `OK Window <remaining_window_bytes>`. This immediate acknowledgement replenishment lets a first 65,536-byte message progress even when the ring is empty, without waiting for an unrelated message to be dequeued.
-
-Separately, each actual ring-slot dequeue creates up to 2,048 additional credits for every active stream, reported asynchronously as `WINDOW_UPDATE <additional_credits>`. Credits are capped at 65,536 per stream, and only an observed dequeue can trigger this update. When a complete message is waiting for a full ring, it remains in that connection's staging state until a real slot is free; no client is promised a queue slot early. The body-length check remains independently capped at 65,536 bytes.
-
-## SMP mailbox protocol
-
-After `MODE RECV`, the server replies `AUTH REQUIRED <eight-character nonce>`. The client sends `AUTH <username> <decimal hash>`, where the hash is unsigned-long DJB2 over the password concatenated directly with the nonce. A successful login returns `OK Welcome <canonical_username>`. Two invalid attempts return `ERR Authentication failed`; the third returns `ERR Too many failures` and closes the connection. Nonces use the system random source (`getrandom()` with `/dev/urandom` fallback).
-
-Authenticated commands are:
-
-| Command | Response |
+| Command or state | Required behavior |
 | --- | --- |
-| `LIST` | `OK <count> messages`, then tab-separated `<id>`, display name, subject, and date rows, then `.` |
-| `READ <id>` | `OK`, then the stored headers and body; the body is dot-stuffed and followed by `.` |
-| `DELETE <id>` | `OK Deleted.` when the file is removed |
-| `COUNT` | `OK <count>.` |
-| `QUIT` | `BYE`, then close |
+| FROM <display name> | Start a transaction; reply `OK Sender accepted.` |
+| TO <username> | Accept registered recipients with `OK Recipient accepted.`; unknown users receive `ERR No such user.` |
+| SUB <subject> | Require at least one accepted recipient; reply `OK Subject accepted.`; empty text is stored as `(no subject)`. |
+| BODY_STREAM | Enter chunked body input; initially reply `OK Window 2048`. |
+| CHUNK <byte_count> | Read exactly that many raw bytes after the header's CRLF; acknowledge the remaining window. |
+| END_BODY | Queue the complete message, then reply `OK Queued <ticket> to N mailboxes`. |
+| BODY | Reply `OK Send body, end with CRLF.CRLF.` and accept legacy dot-terminated input. |
+| QUIT | Reply `BYE` and close after completing the transaction. |
 
-Unknown commands return `ERR Unknown command.`. The mailbox client can log out and return to the main menu; it opens a fresh TCP connection for each SEND or RECV choice because a connection selects one mode.
+Out-of-sequence commands receive `ERR Bad sequence`. After a queued message, another FROM can start the next transaction on the same sending connection. Unknown recipients do not prevent subsequent valid TO commands. The client must receive at least one acceptance before proceeding to SUB.
 
-## Compatibility assumptions
+In BODY_STREAM, byte counts frame the payload; raw data may contain line breaks and may arrive in several TCP reads. No extra separator is inserted between a chunk's raw bytes and the next command. In BODY, a line containing only `.` terminates input, including an empty body. A sender adds a dot to a body line that already starts with one; the server removes this extra dot. The combined body limit is 65,536 bytes in either mode; exceeding it returns `ERR Body too large.`.
 
-Protocol command text and stored headers use ASCII-compatible single-byte text. Bodies are raw bytes, although the interactive client accepts terminal text. The DJB2 value is formatted as an unsigned decimal `unsigned long`; client and server must use the same ABI width and byte interpretation. The intended environment is the same Linux/POSIX host for both daemons, so the shared-memory structure is native-layout and is not an inter-machine wire format. Local timestamps use the host's local timezone. Ticket numbers are volatile across spooler restarts; message IDs are durable across deletion and restart.
+### Byte credits and backpressure
 
-## Local verification
+The byte window and the ring's message-slot count are different resources. Each complete chunk consumes credits and receives `OK Window <remaining>`. Consumed bytes move into the connection's bounded body record and become pending for credit restoration. A later `WINDOW_UPDATE <additional_credits>` restores those bytes when the spool queue has available capacity. This allows a first large upload to progress without an unrelated prior message.
 
-Build and run the local integration suite with:
+When the ring is full, credit restoration waits. A sender that consumes its initial 2,048 bytes can therefore receive `OK Window 0` and must pause. The poll loop continues serving other clients. Once the spooler drains the ring, credit updates and waiting queue confirmations resume. Sending a chunk larger than the advertised balance, including any positive chunk at zero credits, returns `ERR Window overflow` and closes the connection. Each body remains bounded independently at 65,536 bytes.
 
-```sh
-make clean
-make
-make test
-```
+## SMP authentication and mailbox operations
 
-The suite launches the real binaries in temporary local directories. It covers registry/startup failures, both modes, fragmented command frames, send ordering, multiple recipients and concurrent sessions, stream and legacy bodies, dot stuffing, full-size bodies, over-credit rejection, queue-full recovery and `WINDOW_UPDATE`, mailbox LIST/READ/DELETE/COUNT, successful and three-failure authentication, and non-reused mailbox IDs after deletion and daemon restart. It uses no external services and does not publish or push the tests.
+After RECV selection, the server sends `AUTH REQUIRED <nonce>`, using eight random alphanumeric characters. The client hashes password followed by nonce, with no separator, using the assignment's DJB2 algorithm, and sends `AUTH <username> <unsigned-decimal hash>`. Successful authentication returns `OK Welcome <canonical username>`. Failed attempts receive `ERR Authentication failed`; the third receives `ERR Too many failures` and closes the connection.
+
+| Authenticated command | Response |
+| --- | --- |
+| LIST | `OK <count> messages`, then tab-separated ID, sender display name, subject and date rows; end with a single `.` line. |
+| READ <id> | `OK`, followed by the mail headers/body, with dot-stuffing for body lines beginning with `.`; end with a single `.` line. |
+| DELETE <id> | Remove that user's file and reply `OK Deleted.`; retain ID history. |
+| COUNT | `OK <count>.` |
+| QUIT | `BYE`, then close. |
+| Unrecognized command | `ERR Unknown command.` |
+
+Missing READ/DELETE targets receive an error and leave the mailbox unchanged. Authentication fixes the mailbox identity for the session; IDs are interpreted within that user's directory. Client and server must use the same unsigned-long ABI width for DJB2. Command/header text is ASCII-compatible; streamed bodies are raw bytes. Dates and daemon logs use the Ubuntu host's local timezone.
+
+## Interactive client and event logs
+
+`smclient <server_ip> <port>` provides the required numbered menu: 1 sends, 2 checks a mailbox, and 3 quits. Sending prompts for display name, recipients, subject and body; a blank recipient finishes the list, and a single-dot body line finishes terminal entry. The client handles chunks, credits and asynchronous updates. Mailbox commands provide list, read, delete, count and logout. Logout returns to the main menu using a fresh connection for the next mode. Retrieval removes transport dot-stuffing before displaying the body.
+
+Both daemons write significant events to stdout with `[YYYY-MM-DD HH:MM:SS]` prefixes. Server events cover connection, mode, authentication, queue insertion, mailbox access and disconnection. Spooler events cover dequeue and per-recipient delivery or failure. These logs distinguish queue acceptance from later file delivery.
+
+## Verification and troubleshooting
+
+The current source builds without warnings on Ubuntu 24.04.3 LTS, x86_64, GCC 13.3.0. Ten integration tests cover protocol, storage, concurrency and failure handling. Further scenario runs below force the assignment's boundary and recovery conditions, including an actual 30-second idle timeout, a stopped consumer, zero credits, and twenty simultaneous senders. The real interactive client is also exercised. Test scripts and capture drivers remain local; captured output is included in the documentation.
+
+If the shared queue cannot be opened, start the spooler first. If binding fails, use a free port. For registry errors, correct the characters, lengths or duplicate name. For authentication failure, check password case and hash the password before the current nonce. For an unsafe ID counter, preserve the mailbox and restore valid metadata instead of resetting the number. For delayed sending with a full queue, inspect the spooler and delivery logs; queue confirmations and credit restoration wait for consumer capacity.
 
 ## Ubuntu execution output
 
-The following terminal-style images reproduce captured output from Ubuntu 24.04.3 LTS (x86_64, GCC 13.3.0). They are rendered transcripts, rather than desktop captures. The relocated project built without warnings and all 10 integration tests passed. The tests remain local and are excluded from GitHub.
+![Build and regression results](terminal-output/verification.png)
 
-![Build output](terminal-output/build.png)
+![Registry errors and startup order](terminal-output/startup.png)
 
-![Integration test output](terminal-output/tests.png)
+![Unknown mode and idle timeout](terminal-output/handshake.png)
 
-![Send and retrieve session](terminal-output/demo.png)
+![Sequence and recipient validation](terminal-output/recipients.png)
+
+![Default subject and dot stuffing](terminal-output/legacy.png)
+
+![Authentication and mailbox errors](terminal-output/authentication.png)
+
+![Body limit and window overrun](terminal-output/limits.png)
+
+![TCP fragments and line length](terminal-output/framing.png)
+
+![Full queue, zero window and recovery](terminal-output/backpressure.png)
+
+![Twenty concurrent senders](terminal-output/concurrency.png)
+
+![IDs after deletion and restart](terminal-output/restart.png)
+
+![Interactive send menu](terminal-output/client-send.png)
+
+![Interactive mailbox menu](terminal-output/client-mailbox.png)
+
+![Timestamped server and spooler events](terminal-output/daemons.png)

@@ -1,0 +1,12 @@
+Ubuntu 24.04.3 LTS | Unknown mode and 30-second idle timeout
+
+S> WELCOME SimpleMail v1.0
+C> MODE INVALID
+S> ERR Unknown mode
+[connection closed by server]
+S> WELCOME SimpleMail v1.0
+[no MODE sent; waiting for the actual 30-second deadline]
+[connection closed by server]
+observed idle interval: 30.04 seconds
+
+RESULT: PASS

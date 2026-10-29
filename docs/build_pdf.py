@@ -5,7 +5,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Preformatted, Table, TableStyle, PageBreak, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Preformatted, Table, TableStyle, PageBreak, Image, KeepTogether
 
 root = Path(__file__).resolve().parents[1]
 source = root / 'docs' / 'SimpleMail-Technical-Guide.md'
@@ -25,7 +25,7 @@ def inline(text):
     text = html.escape(text, quote=False)
     text = re.sub(r'`([^`]+)`', r'<font name="Courier">\1</font>', text)
     text = re.sub(r'\*\*([^*]+)\*\*', r'<b>\1</b>', text)
-    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<u>\1</u>', text)
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', lambda m: '<link href="https://github.com/TarunNagarajan/SimpleMail/blob/main/docs/' + m.group(2) + '">' + m.group(1) + '</link>', text)
     return text
 
 lines = source.read_text(encoding='utf-8').splitlines()
@@ -40,12 +40,11 @@ while i < len(lines):
     if s.startswith('!['):
         match = re.match(r'!\[([^]]+)\]\(([^)]+)\)', s)
         if match:
-            if image_count > 1: flow.append(PageBreak())
-            flow.append(Paragraph(inline(match[1]), styles['GuideH3']))
+            caption = Paragraph(inline(match[1]), styles['GuideH3'])
             im = Image(str(source.parent / match[2]))
-            scale = min(174*mm/im.imageWidth, 218*mm/im.imageHeight)
+            scale = min(174*mm/im.imageWidth, 185*mm/im.imageHeight)
             im.drawWidth=im.imageWidth*scale; im.drawHeight=im.imageHeight*scale
-            flow.append(im); image_count += 1
+            flow.append(KeepTogether([caption, im, Spacer(1, 5)])); image_count += 1
         i += 1; continue
     if s.startswith('```'):
         i += 1; code = []
@@ -56,7 +55,6 @@ while i < len(lines):
         continue
     if s.startswith('# '):
         flow.append(Paragraph(inline(s[2:]), styles['GuideTitle'])); i += 1; continue
-    if s == '## Ubuntu execution output': flow.append(PageBreak())
     if s.startswith('## '):
         flow.append(Paragraph(inline(s[3:]), styles['GuideH2'])); i += 1; continue
     if s.startswith('### '):
@@ -86,7 +84,7 @@ while i < len(lines):
     if s.startswith('- ') or s.startswith('* '):
         flow.append(Paragraph('• ' + inline(s[2:]), styles['GuideBullet'])); i += 1; continue
     para = [s]; i += 1
-    while i < len(lines) and lines[i].strip() and not lines[i].strip().startswith(('#','```','|','- ','* ')):
+    while i < len(lines) and lines[i].strip() and not lines[i].strip().startswith(('#','```','|','- ','* ','![')):
         para.append(lines[i].strip()); i += 1
     flow.append(Paragraph(inline(' '.join(para)), styles['GuideBody']))
 
@@ -101,6 +99,6 @@ def page(canvas, doc):
     canvas.drawRightString(w-18*mm, 10*mm, f'{doc.page}')
     canvas.restoreState()
 
-doc = SimpleDocTemplate(str(target), pagesize=A4, rightMargin=18*mm, leftMargin=18*mm, topMargin=17*mm, bottomMargin=18*mm, title='SimpleMail Technical Guide', author='SimpleMail Project Group')
+doc = SimpleDocTemplate(str(target), pagesize=A4, rightMargin=18*mm, leftMargin=18*mm, topMargin=17*mm, bottomMargin=18*mm, title='SimpleMail, Documentation.', author='SimpleMail Project Group')
 doc.build(flow, onFirstPage=page, onLaterPages=page)
 print(target)

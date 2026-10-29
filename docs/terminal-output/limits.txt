@@ -1,0 +1,53 @@
+Ubuntu 24.04.3 LTS | Body-size boundary and credit overrun
+
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB 65536 bytes
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+[31 further 2048-byte chunks sent; every acknowledgement checked]
+C> END_BODY
+S> WINDOW_UPDATE 2048
+S> OK Queued 1 to 1 mailboxes
+stored body byte count: 65536
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB too large
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+[65536 accepted body bytes; attempting one additional byte]
+S> WINDOW_UPDATE 2048
+C> CHUNK 1
+S> ERR Body too large.
+[connection closed by server]
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB credit overrun
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 2049
+S> ERR Window overflow
+[connection closed by server]
+
+RESULT: PASS

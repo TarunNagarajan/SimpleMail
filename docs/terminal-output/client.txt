@@ -1,0 +1,70 @@
+Ubuntu 24.04.3 LTS | Interactive client
+
+$ ./smclient 127.0.0.1 <port>
+1. Send a mail
+2. Check my mailbox
+3. Quit
+Choice: 1
+WELCOME SimpleMail v1.0
+OK
+Sender display name: Tarun Nagarajan
+OK Sender accepted.
+Recipient username (blank when finished): bob
+OK Recipient accepted.
+Recipient username (blank when finished):
+Subject (blank for no subject): Client menu test
+OK Subject accepted.
+Enter the body one line at a time. A line containing only a single period ends it.
+Client output from Ubuntu
+.
+OK Window 2048
+OK Window 2021
+Server credit update: WINDOW_UPDATE 27
+OK Queued 1 to 1 mailboxes
+1. Send a mail
+2. Check my mailbox
+3. Quit
+Choice: 3
+
+$ ./smclient 127.0.0.1 <port>
+1. Send a mail
+2. Check my mailbox
+3. Quit
+Choice: 2
+WELCOME SimpleMail v1.0
+Mailbox nonce: ecZxr0g4
+Username: bob
+Password: secret2
+OK Welcome bob
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: L
+OK 1 messages
+1	Tarun Nagarajan	Client menu test	2026-10-29 10:21:16
+.
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: R
+Message ID: 1
+OK
+From: Tarun Nagarajan
+To: bob
+Subject: Client menu test
+Date: 2026-10-29 10:21:16
+---
+
+Client output from Ubuntu
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: D
+Message ID: 1
+OK Deleted.
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: C
+OK 0.
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: Q
+BYE
+1. Send a mail
+2. Check my mailbox
+3. Quit
+Choice: 3
+
+RESULT: PASS

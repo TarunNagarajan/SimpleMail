@@ -1,0 +1,67 @@
+Ubuntu 24.04.3 LTS | Recipients, default subject and dot-stuffed legacy mail
+
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> SUB too early
+S> ERR Bad sequence
+C> FROM Sumedh Jamadagni
+S> OK Sender accepted.
+C> SUB missing recipient
+S> ERR Bad sequence
+C> TO ghost
+S> ERR No such user.
+C> TO BOB
+S> OK Recipient accepted.
+C> TO carol
+S> OK Recipient accepted.
+C> SUB
+S> OK Subject accepted.
+C> BODY
+S> OK Send body, end with CRLF.CRLF.
+C> legacy text / ..leading dot / .  [three CRLF lines]
+S> OK Queued 1 to 2 mailboxes
+bob: 1 delivered message; carol: 1 delivered message
+S> WELCOME SimpleMail v1.0
+C> MODE RECV
+S> OK
+S> AUTH REQUIRED 1fsOd7PH
+C> AUTH bob 13450275568670631177
+S> OK Welcome bob
+C> READ 1
+S> OK
+S> From: Sumedh Jamadagni
+S> To: bob,carol
+S> Subject: (no subject)
+S> Date: 2026-10-29 10:13:32
+S> ---
+S>
+S> legacy text
+S> ..leading dot
+S> .
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Empty Body
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB empty
+S> OK Subject accepted.
+C> BODY
+S> OK Send body, end with CRLF.CRLF.
+C> .  [empty body]
+S> OK Queued 2 to 1 mailboxes
+
+RESULT: PASS

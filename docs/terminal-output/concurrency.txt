@@ -1,0 +1,26 @@
+Ubuntu 24.04.3 LTS | Twenty simultaneous sending clients
+
+sender 01: OK Queued 10 to 1 mailboxes
+sender 02: OK Queued 11 to 1 mailboxes
+sender 03: OK Queued 12 to 1 mailboxes
+sender 04: OK Queued 8 to 1 mailboxes
+sender 05: OK Queued 13 to 1 mailboxes
+sender 06: OK Queued 14 to 1 mailboxes
+sender 07: OK Queued 4 to 1 mailboxes
+sender 08: OK Queued 15 to 1 mailboxes
+sender 09: OK Queued 16 to 1 mailboxes
+sender 10: OK Queued 1 to 1 mailboxes
+sender 11: OK Queued 9 to 1 mailboxes
+sender 12: OK Queued 5 to 1 mailboxes
+sender 13: OK Queued 17 to 1 mailboxes
+sender 14: OK Queued 18 to 1 mailboxes
+sender 15: OK Queued 19 to 1 mailboxes
+sender 16: OK Queued 3 to 1 mailboxes
+sender 17: OK Queued 20 to 1 mailboxes
+sender 18: OK Queued 7 to 1 mailboxes
+sender 19: OK Queued 6 to 1 mailboxes
+sender 20: OK Queued 2 to 1 mailboxes
+20 simultaneous senders; 20 unique tickets; mailbox COUNT = 20
+elapsed: 2.981 seconds
+
+RESULT: PASS

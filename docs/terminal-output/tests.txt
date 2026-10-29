@@ -1,0 +1,15 @@
+test_auth_success_casefold_and_three_failures (__main__.SimpleMailIntegration.test_auth_success_casefold_and_three_failures) ... ok
+test_concurrent_sessions_and_command_order (__main__.SimpleMailIntegration.test_concurrent_sessions_and_command_order) ... ok
+test_corrupt_or_missing_id_metadata_fails_closed_after_deletion (__main__.SimpleMailIntegration.test_corrupt_or_missing_id_metadata_fails_closed_after_deletion) ... ok
+test_empty_subject_legacy_body_and_restart_id_nonreuse (__main__.SimpleMailIntegration.test_empty_subject_legacy_body_and_restart_id_nonreuse) ... ok
+test_fragmented_send_multi_recipient_list_read_delete_and_ids (__main__.SimpleMailIntegration.test_fragmented_send_multi_recipient_list_read_delete_and_ids) ... ok
+test_max_body_and_over_credit_rejection (__main__.SimpleMailIntegration.test_max_body_and_over_credit_rejection) ... ok
+test_queue_full_blocks_enqueue_then_recovers (__main__.SimpleMailIntegration.test_queue_full_blocks_enqueue_then_recovers) ... ok
+test_spooler_fails_closed_on_corrupt_id_metadata (__main__.SimpleMailIntegration.test_spooler_fails_closed_on_corrupt_id_metadata) ... ok
+test_spooler_refuses_missing_history_for_existing_mailbox (__main__.SimpleMailIntegration.test_spooler_refuses_missing_history_for_existing_mailbox) ... ok
+test_startup_rejects_bad_registry_and_missing_queue (__main__.SimpleMailIntegration.test_startup_rejects_bad_registry_and_missing_queue) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 21.878s
+
+OK

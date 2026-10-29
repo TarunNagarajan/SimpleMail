@@ -1,0 +1,34 @@
+Ubuntu 24.04.3 LTS | Authentication limit and mailbox error cases
+
+S> WELCOME SimpleMail v1.0
+C> MODE RECV
+S> OK
+S> AUTH REQUIRED ffG02rlK
+C> AUTH alice 11170462823096910224
+S> ERR Authentication failed
+C> AUTH alice 11170462823096910224
+S> ERR Authentication failed
+C> AUTH alice 11170462823096910224
+S> ERR Too many failures
+[connection closed by server]
+S> WELCOME SimpleMail v1.0
+C> MODE RECV
+S> OK
+S> AUTH REQUIRED Lc36XifL
+C> AUTH ALICE 9023256256581385876
+S> OK Welcome alice
+C> COUNT
+S> OK 0.
+C> LIST
+S> OK 0 messages
+S> .
+C> READ 999
+S> ERR No such message
+C> DELETE 999
+S> ERR No such message
+C> PING
+S> ERR Unknown command.
+C> QUIT
+S> BYE
+
+RESULT: PASS

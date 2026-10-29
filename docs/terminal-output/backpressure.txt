@@ -1,0 +1,57 @@
+Ubuntu 24.04.3 LTS | Full ring, zero window and recovery
+
+$ kill -STOP <spooler-pid>  # controlled pause
+fill slot 1: OK Queued 1 to 1 mailboxes
+fill slot 2: OK Queued 2 to 1 mailboxes
+fill slot 3: OK Queued 3 to 1 mailboxes
+fill slot 4: OK Queued 4 to 1 mailboxes
+fill slot 5: OK Queued 5 to 1 mailboxes
+fill slot 6: OK Queued 6 to 1 mailboxes
+fill slot 7: OK Queued 7 to 1 mailboxes
+fill slot 8: OK Queued 8 to 1 mailboxes
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB paused consumer
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+[window is zero; no credit update while ring is full]
+ninth END_BODY: no queue confirmation while all 8 slots are full
+unrelated authenticated COUNT while blocked: 0
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB zero-credit violation
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+C> CHUNK 1
+S> ERR Window overflow
+[connection closed by server]
+$ kill -CONT <spooler-pid>
+waiting sender: OK Queued 9 to 1 mailboxes
+S> WINDOW_UPDATE 2048
+C> CHUNK 6
+C> [6 raw body bytes]
+S> OK Window 2042
+C> END_BODY
+S> WINDOW_UPDATE 6
+S> OK Queued 10 to 1 mailboxes
+delivered mailbox count after recovery: 10
+
+RESULT: PASS
