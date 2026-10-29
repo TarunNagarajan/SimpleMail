@@ -26,4 +26,4 @@ The spooler only initializes ID metadata for a newly created, empty mailbox. If 
 
 Run the local end-to-end suite with `make test`. See [docs/SimpleMail-Technical-Guide.md](docs/SimpleMail-Technical-Guide.md) for architecture, protocol formats, flow control, assumptions, and test coverage.
 
-The [PDF technical guide](docs/SimpleMail-Technical-Guide.pdf) includes monochrome terminal renderings of captured Ubuntu build, test, and protocol output. Test scripts are retained only in the local development checkout and are excluded from the public repository.
+The [PDF technical guide](docs/SimpleMail,%20Documentation.pdf) includes monochrome terminal renderings of captured Ubuntu build, test, and protocol output. Test scripts are retained only in the local development checkout and are excluded from the public repository.

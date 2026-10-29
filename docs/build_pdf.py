@@ -9,7 +9,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Preformatte
 
 root = Path(__file__).resolve().parents[1]
 source = root / 'docs' / 'SimpleMail-Technical-Guide.md'
-target = root / 'docs' / 'SimpleMail-Technical-Guide.pdf'
+target = root / 'docs' / 'SimpleMail, Documentation.pdf'
 
 styles = getSampleStyleSheet()
 styles.add(ParagraphStyle(name='GuideTitle', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=23, leading=28, textColor=colors.black, spaceAfter=9))
