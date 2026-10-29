@@ -1,0 +1,10 @@
+*.o
+smserver
+smspooler
+smclient
+mailboxes/
+__pycache__/
+*.py[cod]
+
+/tests/
+/work/
