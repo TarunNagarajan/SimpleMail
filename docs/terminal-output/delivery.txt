@@ -1,5 +1,8 @@
 Ubuntu 24.04.3 LTS | Recipients, default subject and dot-stuffed legacy mail
 
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 59679 users.txt
+TCP connection: 127.0.0.1:59679
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -19,26 +22,30 @@ C> SUB
 S> OK Subject accepted.
 C> BODY
 S> OK Send body, end with CRLF.CRLF.
-C> legacy text / ..leading dot / .  [three CRLF lines]
+C> legacy text
+C> ..leading dot
+C> .
 S> OK Queued 1 to 2 mailboxes
 bob: 1 delivered message; carol: 1 delivered message
+TCP connection: 127.0.0.1:59679
 S> WELCOME SimpleMail v1.0
 C> MODE RECV
 S> OK
-S> AUTH REQUIRED 1fsOd7PH
-C> AUTH bob 13450275568670631177
+S> AUTH REQUIRED 3IwFL33L
+C> AUTH bob 13450275616599946516
 S> OK Welcome bob
 C> READ 1
 S> OK
 S> From: Sumedh Jamadagni
 S> To: bob,carol
 S> Subject: (no subject)
-S> Date: 2026-10-29 10:13:32
+S> Date: 2026-10-29 10:38:53
 S> ---
 S>
 S> legacy text
 S> ..leading dot
 S> .
+TCP connection: 127.0.0.1:59679
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -50,6 +57,7 @@ C> SUB Demonstration
 S> OK Subject accepted.
 C> BODY_STREAM
 S> OK Window 2048
+TCP connection: 127.0.0.1:59679
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK

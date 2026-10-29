@@ -1,6 +1,6 @@
 Ubuntu 24.04.3 LTS | Interactive client
 
-$ ./smclient 127.0.0.1 <port>
+$ ./smclient 127.0.0.1 41699
 1. Send a mail
 2. Check my mailbox
 3. Quit
@@ -21,25 +21,25 @@ OK Window 2048
 OK Window 2021
 Server credit update: WINDOW_UPDATE 27
 OK Queued 1 to 1 mailboxes
+3
 1. Send a mail
 2. Check my mailbox
 3. Quit
-Choice: 3
-
-$ ./smclient 127.0.0.1 <port>
+Choice:
+$ ./smclient 127.0.0.1 41699
 1. Send a mail
 2. Check my mailbox
 3. Quit
 Choice: 2
 WELCOME SimpleMail v1.0
-Mailbox nonce: ecZxr0g4
+Mailbox nonce: 1xz6y3o4
 Username: bob
 Password: secret2
 OK Welcome bob
 Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
 Choice: L
 OK 1 messages
-1	Tarun Nagarajan	Client menu test	2026-10-29 10:21:16
+1	Tarun Nagarajan	Client menu test	2026-10-29 10:39:07
 .
 Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
 Choice: R
@@ -48,7 +48,7 @@ OK
 From: Tarun Nagarajan
 To: bob
 Subject: Client menu test
-Date: 2026-10-29 10:21:16
+Date: 2026-10-29 10:39:07
 ---
 
 Client output from Ubuntu

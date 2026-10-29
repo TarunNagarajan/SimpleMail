@@ -1,12 +1,16 @@
 Ubuntu 24.04.3 LTS | Unknown mode and 30-second idle timeout
 
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 50793 users.txt
+TCP connection: 127.0.0.1:50793
 S> WELCOME SimpleMail v1.0
 C> MODE INVALID
 S> ERR Unknown mode
 [connection closed by server]
+TCP connection: 127.0.0.1:50793
 S> WELCOME SimpleMail v1.0
 [no MODE sent; waiting for the actual 30-second deadline]
 [connection closed by server]
-observed idle interval: 30.04 seconds
+observed idle interval: 30.05 seconds
 
 RESULT: PASS

@@ -1,5 +1,8 @@
 Ubuntu 24.04.3 LTS | Body-size boundary and credit overrun
 
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 60843 users.txt
+TCP connection: 127.0.0.1:60843
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -14,11 +17,135 @@ S> OK Window 2048
 C> CHUNK 2048
 C> [2048 raw body bytes]
 S> OK Window 0
-[31 further 2048-byte chunks sent; every acknowledgement checked]
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
 C> END_BODY
 S> WINDOW_UPDATE 2048
 S> OK Queued 1 to 1 mailboxes
 stored body byte count: 65536
+TCP connection: 127.0.0.1:60843
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -30,11 +157,139 @@ C> SUB too large
 S> OK Subject accepted.
 C> BODY_STREAM
 S> OK Window 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
+S> WINDOW_UPDATE 2048
+C> CHUNK 2048
+C> [2048 raw body bytes]
+S> OK Window 0
 [65536 accepted body bytes; attempting one additional byte]
 S> WINDOW_UPDATE 2048
 C> CHUNK 1
 S> ERR Body too large.
 [connection closed by server]
+TCP connection: 127.0.0.1:60843
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK

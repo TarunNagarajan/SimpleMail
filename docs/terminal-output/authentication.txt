@@ -1,21 +1,25 @@
 Ubuntu 24.04.3 LTS | Authentication limit and mailbox error cases
 
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 46171 users.txt
+TCP connection: 127.0.0.1:46171
 S> WELCOME SimpleMail v1.0
 C> MODE RECV
 S> OK
-S> AUTH REQUIRED ffG02rlK
-C> AUTH alice 11170462823096910224
+S> AUTH REQUIRED RwQ8jPWy
+C> AUTH alice 11170461993085822254
 S> ERR Authentication failed
-C> AUTH alice 11170462823096910224
+C> AUTH alice 11170461993085822254
 S> ERR Authentication failed
-C> AUTH alice 11170462823096910224
+C> AUTH alice 11170461993085822254
 S> ERR Too many failures
 [connection closed by server]
+TCP connection: 127.0.0.1:46171
 S> WELCOME SimpleMail v1.0
 C> MODE RECV
 S> OK
-S> AUTH REQUIRED Lc36XifL
-C> AUTH ALICE 9023256256581385876
+S> AUTH REQUIRED PVCswi9m
+C> AUTH ALICE 9023256410965694251
 S> OK Welcome alice
 C> COUNT
 S> OK 0.

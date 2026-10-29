@@ -1,0 +1,29 @@
+Ubuntu 24.04.3 LTS | Recipients, default subject and dot-stuffed legacy mail
+
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 59679 users.txt
+TCP connection: 127.0.0.1:59679
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> SUB too early
+S> ERR Bad sequence
+C> FROM Sumedh Jamadagni
+S> OK Sender accepted.
+C> SUB missing recipient
+S> ERR Bad sequence
+C> TO ghost
+S> ERR No such user.
+C> TO BOB
+S> OK Recipient accepted.
+C> TO carol
+S> OK Recipient accepted.
+C> SUB
+S> OK Subject accepted.
+C> BODY
+S> OK Send body, end with CRLF.CRLF.
+C> legacy text
+C> ..leading dot
+C> .
+S> OK Queued 1 to 2 mailboxes
+bob: 1 delivered message; carol: 1 delivered message

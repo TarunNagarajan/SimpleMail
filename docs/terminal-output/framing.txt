@@ -1,5 +1,8 @@
 Ubuntu 24.04.3 LTS | Fragmented TCP input and command-length boundary
 
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 47135 users.txt
+TCP connection: 127.0.0.1:47135
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -7,7 +10,7 @@ C> FROM Fragment Test
 S> OK Sender accepted.
 C> TO bob  [sent one byte at a time]
 S> OK Recipient accepted.
-C> SUB [506-byte subject; complete command is 512 bytes]
+C> SUB xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 S> OK Subject accepted.
 C> BODY_STREAM
 S> OK Window 2048
@@ -17,6 +20,7 @@ S> OK Window 2027
 C> END_BODY
 S> WINDOW_UPDATE 21
 S> OK Queued 1 to 1 mailboxes
+TCP connection: 127.0.0.1:47135
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -24,7 +28,7 @@ C> FROM Long Command
 S> OK Sender accepted.
 C> TO bob
 S> OK Recipient accepted.
-C> SUB [507-byte subject; complete command is 513 bytes]
+C> SUB xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 S> ERR Invalid or overlong command line
 [connection closed by server]
 

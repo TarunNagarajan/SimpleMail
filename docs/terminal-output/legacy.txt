@@ -1,0 +1,46 @@
+TCP connection: 127.0.0.1:59679
+S> WELCOME SimpleMail v1.0
+C> MODE RECV
+S> OK
+S> AUTH REQUIRED 3IwFL33L
+C> AUTH bob 13450275616599946516
+S> OK Welcome bob
+C> READ 1
+S> OK
+S> From: Sumedh Jamadagni
+S> To: bob,carol
+S> Subject: (no subject)
+S> Date: 2026-10-29 10:38:53
+S> ---
+S>
+S> legacy text
+S> ..leading dot
+S> .
+TCP connection: 127.0.0.1:59679
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+TCP connection: 127.0.0.1:59679
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Empty Body
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB empty
+S> OK Subject accepted.
+C> BODY
+S> OK Send body, end with CRLF.CRLF.
+C> .  [empty body]
+S> OK Queued 2 to 1 mailboxes
+
+RESULT: PASS

@@ -1,28 +1,30 @@
 Ubuntu 24.04.3 LTS | Server and spooler events
 
-[2026-10-29 10:21:16] server: listening on port 57043 with 3 users
-[2026-10-29 10:21:16] server: client connected
-[2026-10-29 10:21:16] server: selected SEND mode
-[2026-10-29 10:21:16] server: queued ticket 1 from Tarun Nagarajan to 1 mailboxes
-[2026-10-29 10:21:16] server: client disconnected
-[2026-10-29 10:21:16] server: client connected
-[2026-10-29 10:21:16] server: selected RECV mode
-[2026-10-29 10:21:16] server: authenticated mailbox bob
-[2026-10-29 10:21:16] server: mailbox bob counted
-[2026-10-29 10:21:16] server: client disconnected
-[2026-10-29 10:21:16] server: client connected
-[2026-10-29 10:21:16] server: selected RECV mode
-[2026-10-29 10:21:16] server: authenticated mailbox bob
-[2026-10-29 10:21:16] server: mailbox bob listed
-[2026-10-29 10:21:16] server: mailbox bob read message 1
-[2026-10-29 10:21:16] server: mailbox bob deleted message 1
-[2026-10-29 10:21:16] server: mailbox bob counted
-[2026-10-29 10:21:16] server: mailbox bob logged out
-[2026-10-29 10:21:16] server: client disconnected
-[2026-10-29 10:21:16] server: stopping
-[2026-10-29 10:21:16] spooler: ready; 3 registered users, queue capacity 8
-[2026-10-29 10:21:16] spooler: ticket 1 dequeued (1 recipients)
-[2026-10-29 10:21:16] spooler: ticket 1 delivered to bob
-[2026-10-29 10:21:17] spooler: stopping
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 41699 users.txt
+[2026-10-29 10:39:07] server: listening on port 41699 with 3 users
+[2026-10-29 10:39:07] server: client connected
+[2026-10-29 10:39:07] server: selected SEND mode
+[2026-10-29 10:39:07] server: queued ticket 1 from Tarun Nagarajan to 1 mailboxes
+[2026-10-29 10:39:07] server: client disconnected
+[2026-10-29 10:39:07] server: client connected
+[2026-10-29 10:39:07] server: selected RECV mode
+[2026-10-29 10:39:07] server: authenticated mailbox bob
+[2026-10-29 10:39:07] server: mailbox bob counted
+[2026-10-29 10:39:07] server: client disconnected
+[2026-10-29 10:39:07] server: client connected
+[2026-10-29 10:39:07] server: selected RECV mode
+[2026-10-29 10:39:07] server: authenticated mailbox bob
+[2026-10-29 10:39:07] server: mailbox bob listed
+[2026-10-29 10:39:07] server: mailbox bob read message 1
+[2026-10-29 10:39:07] server: mailbox bob deleted message 1
+[2026-10-29 10:39:07] server: mailbox bob counted
+[2026-10-29 10:39:07] server: mailbox bob logged out
+[2026-10-29 10:39:07] server: client disconnected
+[2026-10-29 10:39:07] server: stopping
+[2026-10-29 10:39:07] spooler: ready; 3 registered users, queue capacity 8
+[2026-10-29 10:39:07] spooler: ticket 1 dequeued (1 recipients)
+[2026-10-29 10:39:07] spooler: ticket 1 delivered to bob
+[2026-10-29 10:39:08] spooler: stopping
 
 RESULT: PASS

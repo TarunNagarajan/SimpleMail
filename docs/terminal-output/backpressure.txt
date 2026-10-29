@@ -1,14 +1,133 @@
 Ubuntu 24.04.3 LTS | Full ring, zero window and recovery
 
-$ kill -STOP <spooler-pid>  # controlled pause
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 54275 users.txt
+$ kill -STOP 1379
+TCP connection: 127.0.0.1:54275
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 1 to 1 mailboxes
 fill slot 1: OK Queued 1 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 2 to 1 mailboxes
 fill slot 2: OK Queued 2 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 3 to 1 mailboxes
 fill slot 3: OK Queued 3 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 4 to 1 mailboxes
 fill slot 4: OK Queued 4 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 5 to 1 mailboxes
 fill slot 5: OK Queued 5 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 6 to 1 mailboxes
 fill slot 6: OK Queued 6 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 7 to 1 mailboxes
 fill slot 7: OK Queued 7 to 1 mailboxes
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB Demonstration
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> CHUNK 3
+C> [3 raw body bytes]
+S> OK Window 2045
+C> END_BODY
+S> WINDOW_UPDATE 3
+S> OK Queued 8 to 1 mailboxes
 fill slot 8: OK Queued 8 to 1 mailboxes
+TCP connection: 127.0.0.1:54275
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -24,8 +143,30 @@ C> CHUNK 2048
 C> [2048 raw body bytes]
 S> OK Window 0
 [window is zero; no credit update while ring is full]
+TCP connection: 127.0.0.1:54275
+S> WELCOME SimpleMail v1.0
+C> MODE SEND
+S> OK
+C> FROM Tarun Nagarajan
+S> OK Sender accepted.
+C> TO bob
+S> OK Recipient accepted.
+C> SUB ninth message
+S> OK Subject accepted.
+C> BODY_STREAM
+S> OK Window 2048
+C> END_BODY
 ninth END_BODY: no queue confirmation while all 8 slots are full
-unrelated authenticated COUNT while blocked: 0
+TCP connection: 127.0.0.1:54275
+S> WELCOME SimpleMail v1.0
+C> MODE RECV
+S> OK
+S> AUTH REQUIRED feoCSIwb
+C> AUTH bob 13450277825985278351
+S> OK Welcome bob
+C> COUNT
+S> OK 0.
+TCP connection: 127.0.0.1:54275
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -43,7 +184,8 @@ S> OK Window 0
 C> CHUNK 1
 S> ERR Window overflow
 [connection closed by server]
-$ kill -CONT <spooler-pid>
+$ kill -CONT 1379
+S> OK Queued 9 to 1 mailboxes
 waiting sender: OK Queued 9 to 1 mailboxes
 S> WINDOW_UPDATE 2048
 C> CHUNK 6

@@ -1,5 +1,8 @@
 Ubuntu 24.04.3 LTS | Deletion and durable IDs across daemon restart
 
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 53069 users.txt
+TCP connection: 127.0.0.1:53069
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -17,18 +20,23 @@ S> OK Window 2033
 C> END_BODY
 S> WINDOW_UPDATE 15
 S> OK Queued 1 to 1 mailboxes
+TCP connection: 127.0.0.1:53069
 S> WELCOME SimpleMail v1.0
 C> MODE RECV
 S> OK
-S> AUTH REQUIRED dYRc9xuB
-C> AUTH bob 13450277724152916567
+S> AUTH REQUIRED UFBWKdUX
+C> AUTH bob 13450277059698607213
 S> OK Welcome bob
 C> DELETE 1
 S> OK Deleted.
 C> COUNT
 S> OK 0.
 before restart .next-id: 2
-$ restart smspooler and smserver
+$ kill -TERM 1404
+$ kill -TERM 1403
+$ /mnt/c/Users/ultim/SimpleMail/smspooler users.txt
+$ /mnt/c/Users/ultim/SimpleMail/smserver 52803 users.txt
+TCP connection: 127.0.0.1:52803
 S> WELCOME SimpleMail v1.0
 C> MODE SEND
 S> OK
@@ -46,15 +54,16 @@ S> OK Window 2033
 C> END_BODY
 S> WINDOW_UPDATE 15
 S> OK Queued 1 to 1 mailboxes
+TCP connection: 127.0.0.1:52803
 S> WELCOME SimpleMail v1.0
 C> MODE RECV
 S> OK
-S> AUTH REQUIRED 6SzixkIO
-C> AUTH bob 13450275757530511492
+S> AUTH REQUIRED GcCYSdW0
+C> AUTH bob 13450276500534771393
 S> OK Welcome bob
 C> LIST
 S> OK 1 messages
-S> 2	Tarun Nagarajan	Demonstration	2026-10-29 10:13:47
+S> 2	Tarun Nagarajan	Demonstration	2026-10-29 10:39:05
 S> .
 mailbox files: 2.txt
 mailbox ID 1 not reused; queue ticket sequence is scoped to a spooler run

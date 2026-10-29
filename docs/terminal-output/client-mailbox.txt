@@ -1,0 +1,42 @@
+$ ./smclient 127.0.0.1 41699
+1. Send a mail
+2. Check my mailbox
+3. Quit
+Choice: 2
+WELCOME SimpleMail v1.0
+Mailbox nonce: 1xz6y3o4
+Username: bob
+Password: secret2
+OK Welcome bob
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: L
+OK 1 messages
+1	Tarun Nagarajan	Client menu test	2026-10-29 10:39:07
+.
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: R
+Message ID: 1
+OK
+From: Tarun Nagarajan
+To: bob
+Subject: Client menu test
+Date: 2026-10-29 10:39:07
+---
+
+Client output from Ubuntu
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: D
+Message ID: 1
+OK Deleted.
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: C
+OK 0.
+Mailbox: [L]ist, [R]ead, [D]elete, [C]ount, [Q]uit
+Choice: Q
+BYE
+1. Send a mail
+2. Check my mailbox
+3. Quit
+Choice: 3
+
+RESULT: PASS

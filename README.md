@@ -64,9 +64,13 @@ Daemon events use `[YYYY-MM-DD HH:MM:SS]` prefixes on stdout. The server records
 
 ## Output
 
-### Build and regression results
+### Build and regression results (1/2)
 
-![Build and regression results](docs/terminal-output/verification.png)
+![Build and regression results (1/2)](docs/terminal-output/verification-01.png)
+
+### Build and regression results (2/2)
+
+![Build and regression results (2/2)](docs/terminal-output/verification-02.png)
 
 ### Registry errors and startup order
 
@@ -80,33 +84,121 @@ Daemon events use `[YYYY-MM-DD HH:MM:SS]` prefixes on stdout. The server records
 
 ![Sequence and recipient validation](docs/terminal-output/recipients.png)
 
-### Default subject and dot stuffing
+### Default subject and dot stuffing (1/2)
 
-![Default subject and dot stuffing](docs/terminal-output/legacy.png)
+![Default subject and dot stuffing (1/2)](docs/terminal-output/legacy-01.png)
+
+### Default subject and dot stuffing (2/2)
+
+![Default subject and dot stuffing (2/2)](docs/terminal-output/legacy-02.png)
 
 ### Authentication and mailbox errors
 
 ![Authentication and mailbox errors](docs/terminal-output/authentication.png)
 
-### Body limit and window overrun
+### Body limit and window overrun (1/7)
 
-![Body limit and window overrun](docs/terminal-output/limits.png)
+![Body limit and window overrun (1/7)](docs/terminal-output/limits-01.png)
 
-### TCP fragments and line length
+### Body limit and window overrun (2/7)
 
-![TCP fragments and line length](docs/terminal-output/framing.png)
+![Body limit and window overrun (2/7)](docs/terminal-output/limits-02.png)
 
-### Full queue, zero window and recovery
+### Body limit and window overrun (3/7)
 
-![Full queue, zero window and recovery](docs/terminal-output/backpressure.png)
+![Body limit and window overrun (3/7)](docs/terminal-output/limits-03.png)
 
-### Twenty concurrent senders
+### Body limit and window overrun (4/7)
 
-![Twenty concurrent senders](docs/terminal-output/concurrency.png)
+![Body limit and window overrun (4/7)](docs/terminal-output/limits-04.png)
 
-### IDs after deletion and restart
+### Body limit and window overrun (5/7)
 
-![IDs after deletion and restart](docs/terminal-output/restart.png)
+![Body limit and window overrun (5/7)](docs/terminal-output/limits-05.png)
+
+### Body limit and window overrun (6/7)
+
+![Body limit and window overrun (6/7)](docs/terminal-output/limits-06.png)
+
+### Body limit and window overrun (7/7)
+
+![Body limit and window overrun (7/7)](docs/terminal-output/limits-07.png)
+
+### TCP fragments and line length (1/2)
+
+![TCP fragments and line length (1/2)](docs/terminal-output/framing-01.png)
+
+### TCP fragments and line length (2/2)
+
+![TCP fragments and line length (2/2)](docs/terminal-output/framing-02.png)
+
+### Full queue, zero window and recovery (1/5)
+
+![Full queue, zero window and recovery (1/5)](docs/terminal-output/backpressure-01.png)
+
+### Full queue, zero window and recovery (2/5)
+
+![Full queue, zero window and recovery (2/5)](docs/terminal-output/backpressure-02.png)
+
+### Full queue, zero window and recovery (3/5)
+
+![Full queue, zero window and recovery (3/5)](docs/terminal-output/backpressure-03.png)
+
+### Full queue, zero window and recovery (4/5)
+
+![Full queue, zero window and recovery (4/5)](docs/terminal-output/backpressure-04.png)
+
+### Full queue, zero window and recovery (5/5)
+
+![Full queue, zero window and recovery (5/5)](docs/terminal-output/backpressure-05.png)
+
+### Twenty concurrent senders (1/10)
+
+![Twenty concurrent senders (1/10)](docs/terminal-output/concurrency-01.png)
+
+### Twenty concurrent senders (2/10)
+
+![Twenty concurrent senders (2/10)](docs/terminal-output/concurrency-02.png)
+
+### Twenty concurrent senders (3/10)
+
+![Twenty concurrent senders (3/10)](docs/terminal-output/concurrency-03.png)
+
+### Twenty concurrent senders (4/10)
+
+![Twenty concurrent senders (4/10)](docs/terminal-output/concurrency-04.png)
+
+### Twenty concurrent senders (5/10)
+
+![Twenty concurrent senders (5/10)](docs/terminal-output/concurrency-05.png)
+
+### Twenty concurrent senders (6/10)
+
+![Twenty concurrent senders (6/10)](docs/terminal-output/concurrency-06.png)
+
+### Twenty concurrent senders (7/10)
+
+![Twenty concurrent senders (7/10)](docs/terminal-output/concurrency-07.png)
+
+### Twenty concurrent senders (8/10)
+
+![Twenty concurrent senders (8/10)](docs/terminal-output/concurrency-08.png)
+
+### Twenty concurrent senders (9/10)
+
+![Twenty concurrent senders (9/10)](docs/terminal-output/concurrency-09.png)
+
+### Twenty concurrent senders (10/10)
+
+![Twenty concurrent senders (10/10)](docs/terminal-output/concurrency-10.png)
+
+### IDs after deletion and restart (1/2)
+
+![IDs after deletion and restart (1/2)](docs/terminal-output/restart-01.png)
+
+### IDs after deletion and restart (2/2)
+
+![IDs after deletion and restart (2/2)](docs/terminal-output/restart-02.png)
 
 ### Interactive send menu
 
